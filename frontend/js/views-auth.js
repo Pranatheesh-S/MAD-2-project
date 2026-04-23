@@ -1,4 +1,3 @@
-// ── Login View ────────────────────────────────────────────────────────────────
 const LoginView = {
     template: `
   <div class="auth-wrapper">
@@ -46,7 +45,6 @@ const LoginView = {
     }
 };
 
-// ── Register View ─────────────────────────────────────────────────────────────
 const RegisterView = {
     template: `
   <div class="auth-wrapper">

@@ -1,10 +1,4 @@
-// ──────────────────────────────────────────────────────────────────────────────
-// store.js — Global reactive store (Vuex-like, using Vue 3 reactivity)
-// ──────────────────────────────────────────────────────────────────────────────
-
-
-const API = '';   // same origin
-
+const API = '';
 const store = {
   state: Vue.reactive({
     token: localStorage.getItem('ppa_token') || null,
@@ -13,12 +7,10 @@ const store = {
     loading: false,
   }),
 
-  // ── Getters ────────────────────────────────────────────────────────────────
   get isLoggedIn() { return !!this.state.token; },
   get role() { return this.state.user?.role || null; },
   get user() { return this.state.user; },
 
-  // ── Auth ───────────────────────────────────────────────────────────────────
   setSession(token, user) {
     this.state.token = token;
     this.state.user = user;
@@ -33,7 +25,6 @@ const store = {
     localStorage.removeItem('ppa_user');
   },
 
-  // ── API Fetch ──────────────────────────────────────────────────────────────
   async api(method, path, body = null) {
     const headers = { 'Content-Type': 'application/json' };
     if (this.state.token) headers['Authorization'] = `Bearer ${this.state.token}`;
@@ -50,7 +41,6 @@ const store = {
   put(path, body) { return this.api('PUT', path, body); },
   delete(path) { return this.api('DELETE', path); },
 
-  // ── Toasts ─────────────────────────────────────────────────────────────────
   toast(message, type = 'info') {
     const id = Date.now();
     this.state.toasts.push({ id, message, type });

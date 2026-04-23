@@ -1,10 +1,3 @@
-"""
-tasks.py — All Celery tasks:
-  a) Scheduled: daily_deadline_reminders  (runs daily at 8 AM)
-  b) Scheduled: monthly_activity_report   (runs 1st of every month)
-  c) Scheduled: close_expired_drives      (runs daily at midnight)
-  d) User-triggered: export_applications_csv
-"""
 import os
 import csv
 import json
@@ -21,7 +14,7 @@ logger = logging.getLogger(__name__)
 flask_app = create_app()
 celery = make_celery(flask_app)
 
-# ── Beat Schedule ──────────────────────────────────────────────────────────────
+# Celery Beat Schedule
 celery.conf.beat_schedule = {
     # a) Daily reminders at 08:00
     'daily-deadline-reminders': {
@@ -42,13 +35,9 @@ celery.conf.beat_schedule = {
 celery.conf.timezone = 'Asia/Kolkata'
 
 
-# ── a) Daily Deadline Reminders ────────────────────────────────────────────────
 @celery.task(name='backend.tasks.daily_deadline_reminders', bind=True)
 def daily_deadline_reminders(self):
-    """
-    Sends deadline reminders (email + G-Chat) to students
-    for drives expiring within the next 7 days.
-    """
+    """Deadline reminders for drives expiring soon."""
     from .models import StudentProfile, PlacementDrive, Application
     from .notifications import send_email, send_gchat_message, build_reminder_email
 
@@ -112,7 +101,6 @@ def daily_deadline_reminders(self):
     return {'reminders_sent': count}
 
 
-# ── b) Monthly Activity Report ─────────────────────────────────────────────────
 @celery.task(name='backend.tasks.monthly_activity_report', bind=True)
 def monthly_activity_report(self):
     """
@@ -171,7 +159,6 @@ def monthly_activity_report(self):
     return {'month': month_label, 'stats': stats}
 
 
-# ── c) Close Expired Drives ────────────────────────────────────────────────────
 @celery.task(name='backend.tasks.close_expired_drives', bind=True)
 def close_expired_drives(self):
     """Auto-close approved drives whose deadline has passed."""
@@ -195,7 +182,6 @@ def close_expired_drives(self):
     return {'closed_count': len(expired)}
 
 
-# ── d) Export Applications as CSV (User-Triggered) ────────────────────────────
 @celery.task(name='backend.tasks.export_applications_csv', bind=True)
 def export_applications_csv(self, student_id: int):
     """
@@ -268,7 +254,6 @@ def export_applications_csv(self, student_id: int):
     return {'file': filename, 'filepath': filepath, 'count': len(apps)}
 
 
-# ── e) Application Confirmation Email (async on apply) ────────────────────────
 @celery.task(name='backend.tasks.send_application_confirmation', bind=True)
 def send_application_confirmation(self, app_id: int, student_name: str,
                                    student_email: str, job_title: str, company_name: str):

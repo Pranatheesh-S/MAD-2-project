@@ -1,9 +1,3 @@
-// ──────────────────────────────────────────────────────────────────────────────
-// router.js — Client-side routing (hash-based for simplicity)
-// ──────────────────────────────────────────────────────────────────────────────
-
-
-
 const router = {
     current: Vue.ref('login'),
     params: Vue.reactive({}),

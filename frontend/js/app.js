@@ -1,7 +1,3 @@
-// ── Main Vue 3 App ────────────────────────────────────────────────────────────
-
-
-// Toast Container Component
 const ToastContainer = {
     template: `
   <div class="toast-container-ppa">
@@ -20,14 +16,12 @@ const ToastContainer = {
     }
 };
 
-// Update router routes to include new views
 Object.assign(router.routes, {
     'admin-applications': 'AdminApplications',
     'admin-jobs': 'AdminJobs',
     'student-history': 'StudentHistory',
 });
 
-// Root App Component
 const App = {
     components: {
         ToastContainer,
@@ -91,7 +85,6 @@ const App = {
     }
 };
 
-// Inject helper styles
 const style = document.createElement('style');
 style.textContent = `
   .active-tab { border-color: var(--primary) !important; color: var(--primary) !important; background: rgba(99,102,241,0.1) !important; }

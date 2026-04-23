@@ -15,12 +15,12 @@ def create_app():
         result_backend=Config.result_backend
     )
 
-    # Init extensions
+    # Extensions init
     db.init_app(app)
     jwt.init_app(app)
     cors.init_app(app, resources={r'/api/*': {'origins': '*'}})
 
-    # Register blueprints
+    # Blueprints registration
     from backend.routes.auth import auth_bp
     from backend.routes.admin import admin_bp
     from backend.routes.company import company_bp
@@ -31,7 +31,7 @@ def create_app():
     app.register_blueprint(company_bp)
     app.register_blueprint(student_bp)
 
-    # Serve Vue SPA
+    # Multi-path route
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_spa(path):
@@ -41,7 +41,7 @@ def create_app():
             return send_from_directory(frontend_dir, path)
         return send_from_directory(frontend_dir, 'index.html')
 
-    # Create DB tables and seed admin on first run
+    # Startup logic
     with app.app_context():
         db.create_all()
         _seed_admin()
